@@ -9,4 +9,3 @@ RUN npm install
 ADD /src .
 ENTRYPOINT npx ts-node --files ./backend/server.ts
 EXPOSE $PORT
-EXPOSE 56700/udp
