@@ -10,6 +10,7 @@ function scheduler() {
 
 function finderOnce() { //If multiple activations are supposed to happen this minute, only one will happen
     Schedule.findOne({
+        enabled: true,
         repeat: "once",
         date: {
             $gte: new Date(),
@@ -21,6 +22,7 @@ function finderOnce() { //If multiple activations are supposed to happen this mi
 
 function finderRepeated() {
     Schedule.findOne({
+        enabled: true,
         repeat: "once",
         date: {
             $gte: new Date(),
