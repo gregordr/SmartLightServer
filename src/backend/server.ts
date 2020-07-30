@@ -21,7 +21,7 @@ connection.once('open', () => {
     console.log("Connected to MongoDB");
 });
 
-mongoose.connect(uriString, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
+mongoose.connect(uriString, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 
 const controlRouter = require('./routers/controlRouter');
 app.use('/light/control', controlRouter);

@@ -3,24 +3,42 @@ import Schema = mongoose.Schema;
 import { Request } from 'express';
 
 const scheduleSchema = new Schema({
-  date: {type: Date,
-    required: true}, 
-  enabled: {type: Boolean,
-    required: true},
-  repeat: {type: String,
-    required: true},
-  r: {type: Number,
-    required: true},
-  b: {type: Number,
-    required: true},
-  g: {type: Number,
-    required: true},
-  kelvin: {type: Number,
-    required: true},
-  duration: {type: Number,
-    required: true}},
- {timestamps: false,
-});
+  date: {
+    type: Date,
+    required: true
+  },
+  enabled: {
+    type: Boolean,
+    required: true
+  },
+  repeat: {
+    type: String,
+    required: true
+  },
+  r: {
+    type: Number,
+    required: true
+  },
+  b: {
+    type: Number,
+    required: true
+  },
+  g: {
+    type: Number,
+    required: true
+  },
+  kelvin: {
+    type: Number,
+    required: true
+  },
+  duration: {
+    type: Number,
+    required: true
+  }
+},
+  {
+    timestamps: false,
+  });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 
@@ -48,9 +66,9 @@ function scheduleCreator(req: Request): mongoose.Document {
   });
 
   return newSchedule;
-} 
+}
 
-function scheduleUpdater(req: Request, schedule : mongoose.Document) {
+function scheduleUpdater(req: Request, schedule: mongoose.Document) {
   const date = Date.parse(req.body.date);
   const enabled = req.body.enabled === 'true';
   const repeat = req.body.repeat;
@@ -76,4 +94,4 @@ module.exports = {
   Schedule,
   scheduleCreator,
   scheduleUpdater
-  };
+};

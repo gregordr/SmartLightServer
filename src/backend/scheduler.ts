@@ -1,7 +1,7 @@
 import mongoose = require('mongoose');
 const Schedule: mongoose.Model<mongoose.Document, {}> = require('./models/schedule.model').Schedule;
 
-let myVar = setInterval(scheduler, 1*1000);
+let myVar = setInterval(scheduler, 1 * 1000);
 
 function scheduler() {
     finderOnce();
@@ -32,12 +32,13 @@ function finderRepeated() {
         .then((found) => { if (found != null) carryOut(found); else finderRepeated(); });
 }
 
-function carryOut(schedule : mongoose.Document) { //Execute this schedule
+function carryOut(schedule: mongoose.Document) { //Execute this schedule
 
 }
 
 function cleaner() {
-    Schedule.remove({repeat: "once",
+    Schedule.remove({
+        repeat: "once",
         date: { $lte: new Date() }
     });
 }

@@ -12,8 +12,8 @@ const scheduleUpdater: Function = require('../models/schedule.model').scheduleUp
 
 router.get('/', (req, res) => { //Get all entries
     Schedule.find()
-    .then((schedule : any) => res.json(schedule))
-    .catch((err : Error) => res.status(400).json('Error: ' + err));
+        .then((schedule: any) => res.json(schedule))
+        .catch((err: Error) => res.status(400).json('Error: ' + err));
 });
 
 router.post('/', (req, res) => { //Add new entry
@@ -29,25 +29,25 @@ router.post('/', (req, res) => { //Add new entry
 
     newSchedule.save() //Send it back in post!
         .then(() => res.json(newSchedule))
-        .catch((err : Error) => res.status(400).json('Error: ' + err));
+        .catch((err: Error) => res.status(400).json('Error: ' + err));
 });
 
 router.put('/:id', (req, res) => { //Change entry
 
     const result = schema.validate(req.body);
-    
+
     if (result.error) {
         res.send(result.error.details[0].message);
         return;
     }
-    
+
     Schedule.findById(req.params.id).then((updateSchedule) => {
         if (updateSchedule === null)
             throw new Error("Schedule not found");
 
         scheduleUpdater(req, updateSchedule)
-        .then(() => Schedule.findById(req.params.id)
-            .then((updatedSchedule) => res.json(updatedSchedule)));
+            .then(() => Schedule.findById(req.params.id)
+                .then((updatedSchedule) => res.json(updatedSchedule)));
     }).catch(err => res.status(400).json('Error: ' + err));
 });
 
