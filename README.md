@@ -11,7 +11,7 @@ NodeJS or Docker, MongoDB database
 
 1. Clone this repository
 2. Create a file called .env and enter `MONGO_URI=<INSERT YOUR MONGO URI>`. Be careful not to commit this!
-3. If using Docker, run `docker build .`, and then run the created dockerfile with the arguments `-p 3999:3999 -p 56700:56700/udp`.
+3. If using Docker, run `docker build .`, and then run the created dockerfile with the arguments `-p 3999:3999`.
 4. If not using Docker, run `npm install` and `npx ts-node --files ./backend/server.ts`.
 
 ## Usage:
