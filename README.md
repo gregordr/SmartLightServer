@@ -14,7 +14,7 @@ NodeJS or Docker, MongoDB database
 3. If using Docker, run `docker build .`, and then run the created dockerfile with the arguments `-p 3999:3999`.
 4. If not using Docker, run `npm install` and `npx ts-node --files ./backend/server.ts`.
 
-Alternatively, download the dockerfile from this repository and run it with arguments `-p 3999:3999 -e "MONGU_URI=<YOUR_MONGO_URI>"`
+Alternatively, download the container from this repository and run it with arguments `-p 3999:3999 -e "MONGU_URI=<YOUR_MONGO_URI>"`
 
 ## Usage:
 Send a `GET` request to `/light/control` to get the state of all lights in your local network.
