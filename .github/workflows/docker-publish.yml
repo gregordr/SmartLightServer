@@ -17,7 +17,7 @@ on:
 
 env:
   # Image's name.
-  IMAGE_NAME: smartLightServerContainer
+  IMAGE_NAME: smart_light_server_container
 
 jobs:
   # Run tests.
