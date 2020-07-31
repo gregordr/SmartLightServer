@@ -1,10 +1,10 @@
 import Lifx = require('node-lifx-lan')
 import express = require('express');
-const router: express.Router = express.Router();
+const router = express.Router();
 import Joi = require('@hapi/joi');
 import mongoose = require('mongoose');
 
-const schema: Joi.ObjectSchema = require('../schemas/scheduleSchema');
+import { scheduleSchema } from '../schemas/scheduleSchema';
 
 const Schedule: mongoose.Model<mongoose.Document, {}> = require('../models/schedule.model').Schedule;
 const scheduleCreator: Function = require('../models/schedule.model').scheduleCreator;
@@ -12,16 +12,16 @@ const scheduleUpdater: Function = require('../models/schedule.model').scheduleUp
 
 router.get('/', (req, res) => { //Get all entries
     Schedule.find()
-        .then((schedule: any) => res.json(schedule))
+        .then((schedule: mongoose.Document[]) => res.json(schedule))
         .catch((err: Error) => res.status(400).json('Error: ' + err));
 });
 
 router.post('/', (req, res) => { //Add new entry
 
-    const result = schema.validate(req.body);
+    const scheduleResult = scheduleSchema.validate(req.body);
 
-    if (result.error) {
-        res.send(result.error.details[0].message);
+    if (scheduleResult.error) {
+        res.json(scheduleResult.error.details[0].message);
         return;
     }
 
@@ -29,15 +29,15 @@ router.post('/', (req, res) => { //Add new entry
 
     newSchedule.save() //Send it back in post!
         .then(() => res.json(newSchedule))
-        .catch((err: Error) => res.status(400).json('Error: ' + err));
+        .catch((err: Error) => res.json('Error: ' + err));
 });
 
 router.put('/:id', (req, res) => { //Change entry
 
-    const result = schema.validate(req.body);
+    const scheduleResult = scheduleSchema.validate(req.body);
 
-    if (result.error) {
-        res.send(result.error.details[0].message);
+    if (scheduleResult.error) {
+        res.json(scheduleResult.error.details[0].message);
         return;
     }
 
@@ -48,13 +48,14 @@ router.put('/:id', (req, res) => { //Change entry
         scheduleUpdater(req, updateSchedule)
             .then(() => Schedule.findById(req.params.id)
                 .then((updatedSchedule) => res.json(updatedSchedule)));
-    }).catch(err => res.status(400).json('Error: ' + err));
+    }).catch(err => res.json('Error: ' + err));
 });
 
 router.delete('/:id', (req, res) => { //Remove entry
     if (req.params.id === 'all') {
         Schedule.remove({})
-            .then(() => res.json());
+            .then(() => res.json())
+            .catch(err => res.json('Error: ' + err));
         return;
     }
 
@@ -63,7 +64,7 @@ router.delete('/:id', (req, res) => { //Remove entry
             throw new Error("Schedule not found");
         res.json(deleteSchedule);
         deleteSchedule.remove();
-    }).catch(err => res.status(400).json('Error: ' + err));
+    }).catch(err => res.json('Error: ' + err));
 });
 
 module.exports = router;

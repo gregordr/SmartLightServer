@@ -1,12 +1,13 @@
 {
-  "name": "test",
+  "name": "smart_light_server",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "build/backend/server.js",
   "scripts": {
+    "start": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "gregordr",
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",

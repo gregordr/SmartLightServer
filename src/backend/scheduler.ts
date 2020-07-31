@@ -1,9 +1,8 @@
 import mongoose = require('mongoose');
 const Schedule: mongoose.Model<mongoose.Document, {}> = require('./models/schedule.model').Schedule;
+import { ControlObject } from './control/controlObject';
 
-let myVar = setInterval(scheduler, 1 * 1000);
-
-function scheduler() {
+export function scheduler() {
     finderOnce();
     cleaner();
 }
@@ -17,7 +16,7 @@ function finderOnce() { //If multiple activations are supposed to happen this mi
             $lt: (new Date()).setMinutes((new Date()).getMinutes() + 1)
         }
     })
-        .then((found) => { if (found != null) carryOut(found); else finderRepeated(); });  //Once, current hour and minute, takes preference over schedule
+        .then((found) => { if (found !== null) carryOut(found); else finderRepeated(); });  //Once, current hour and minute, takes preference over schedule
 }
 
 function finderRepeated() {
@@ -33,7 +32,8 @@ function finderRepeated() {
 }
 
 function carryOut(schedule: mongoose.Document) { //Execute this schedule
-
+    const control = ControlObject.fromDocument(schedule);
+    control.execute();
 }
 
 function cleaner() {

@@ -1,51 +1,23 @@
-import Lifx = require('node-lifx-lan')
 import express = require('express');
-const router: express.Router = express.Router();
+const router = express.Router();
+import { getStatus } from '../control/controller';
+import { ControlObject } from '../control/controlObject';
+import { controlSchema } from '../schemas/controlSchema';
 
-const schema = require('../schemas/controlSchema');
 
-router.post('/', (req, res) => {
+router.get('/', async (req, res) => {
+    res.json(await getStatus());
+});
 
-    const result = schema.validate(req.body);
+router.post('/', async (req, res) => {
+    const result = controlSchema.validate(req.body);
     if (result.error) {
-        res.send(result.error.details[0].message);
+        res.json(result.error.details[0].message);
         return;
     }
 
-    Lifx.setColorBroadcast({
-        color: {
-            red: parseFloat(req.body.r),
-            green: parseFloat(req.body.g),
-            blue: parseFloat(req.body.b),
-            kelvin: req.body.kelvin == null ? 3500 : parseInt(req.body.kelvin)
-        },
-        duration: req.body.duration == null ? 0 : parseInt(req.body.duration)
-    }).then(() => {
-        Lifx.discover().then((device_list: any) => {
-            let res = Promise.all(device_list.map((device: any) => device.getLightState()));
-            return res;
-        }).then((lightState: any) => {
-            res.send(lightState);
-        }).catch((error: any) => {
-            console.log(error);
-            res.send(error);
-        })
-    }).catch((error: Error) => {
-        console.log(error);
-        res.send(error);
-    });
+    const controlObject = ControlObject.fromRequest(req);
+    res.json(await controlObject.execute());
 });
-
-router.get('/', (req, res) => {
-    Lifx.discover().then((device_list: any) => {
-        let res = Promise.all(device_list.map((device: any) => device.getLightState()));
-        return res;
-    }).then((lightState: any) => {
-        res.send(lightState);
-    }).catch((error: any) => {
-        console.log(error);
-        res.send(error);
-    });
-})
 
 module.exports = router;
