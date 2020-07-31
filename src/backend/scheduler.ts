@@ -1,34 +1,41 @@
 import mongoose = require('mongoose');
 const Schedule: mongoose.Model<mongoose.Document, {}> = require('./models/schedule.model').Schedule;
 import { ControlObject } from './control/controlObject';
+import { format, addMinutes } from 'date-fns'
 
 export function scheduler() {
     finderOnce();
     cleaner();
 }
 
-function finderOnce() { //If multiple activations are supposed to happen this minute, only one will happen
-    Schedule.findOne({
+async function finderOnce() { //If multiple activations are supposed to happen this minute, only one will happen
+    let found = await Schedule.findOne({
         enabled: true,
         repeat: "once",
         date: {
             $gte: new Date(),
-            $lt: (new Date()).setMinutes((new Date()).getMinutes() + 1)
+            $lt: (addMinutes(new Date(), 1))
         }
-    })
-        .then((found) => { if (found !== null) carryOut(found); else finderRepeated(); });  //Once, current hour and minute, takes preference over schedule
-}
+    });
 
-function finderRepeated() {
-    Schedule.findOne({
+    if (found !== null) {
+        carryOut(found); //Once, current hour and minute, takes preference over regular schedule
+        return;
+    }
+
+    found = await Schedule.findOne({
         enabled: true,
-        repeat: "once",
-        date: {
+        repeat: "once", //contains current day
+        date: { //only consider H/M
             $gte: new Date(),
-            $lt: (new Date()).setMinutes((new Date()).getMinutes() + 1)
+            $lt: (addMinutes(new Date(), 1))
         }
-    })
-        .then((found) => { if (found != null) carryOut(found); else finderRepeated(); });
+    });
+
+    if (found !== null) {
+        carryOut(found);
+        return;
+    }
 }
 
 function carryOut(schedule: mongoose.Document) { //Execute this schedule
@@ -36,8 +43,8 @@ function carryOut(schedule: mongoose.Document) { //Execute this schedule
     control.execute();
 }
 
-function cleaner() {
-    Schedule.remove({
+async function cleaner() {
+    await Schedule.deleteMany({
         repeat: "once",
         date: { $lte: new Date() }
     });
